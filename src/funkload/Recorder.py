@@ -303,10 +303,22 @@ Examples
         code = code.replace('self.', '\n%sself.' % spaces)
         return code
 
+    def listSpecialHeaders(self, request):
+        ret = []
+        for k in request.headers.keys():
+          if k.startswith('x-'):
+            ret.append(k)
+        return ret
+
     def convertToFunkLoad(self, request):
         """return a funkload python instruction."""
         text = []
         text.append('        # ' + request.file_path)
+        specialHeaders = self.listSpecialHeaders(request)
+        if len(specialHeaders) > 0:
+            text.append('self.clearHeaders()')
+            for h in specialHeaders:
+              text.append('self.setHeader(\'' + h + '\', \'' + request.headers[h] + '\')')
         if request.host != self.server_url:
             text.append('self.%s("%s"' % (request.method.lower(),
                                           request.url))
