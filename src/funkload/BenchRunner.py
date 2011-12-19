@@ -225,6 +225,7 @@ class BenchRunner:
         self.class_name = class_name
         self.method_name = method_name
         self.options = options
+        self.debug = options.debug
         self.color = not options.no_color
         # create a unittest to get the configuration file
         test = load_unittest(self.module_name, class_name,
@@ -367,7 +368,7 @@ class BenchRunner:
                                     self.method_name, self.options,
                                     cycle, number_of_threads,
                                     thread_id, thread_signaller,
-                                    self.sleep_time)
+                                    self.sleep_time, self.debug)
             trace(".")
             try:
                 thread.start()
@@ -632,6 +633,10 @@ def main(args=sys.argv[1:]):
                       action="store_true",
                       help="Remove sleep times between requests and between "
                            "tests, shortcut for -m0 -M0 -t0")
+    parser.add_option("-d", "--debug",
+                      action="store_true",
+                      help="Print debug/trace output (due to multithreading "
+                           "this might be hard to read).")
     parser.add_option("", "--no-color",
                       action="store_true",
                       help="Monochrome output.")
