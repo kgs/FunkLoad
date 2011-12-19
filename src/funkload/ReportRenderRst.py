@@ -558,6 +558,17 @@ class RenderRst:
                 else:
                     traceback = stat.traceback and stat.traceback.replace(
                         'File ', '\n    File ') or 'No traceback.'
+                    lines = traceback.splitlines()
+                    if len(lines) > 1:
+                      ident = 0
+                      traceback = ''
+                      for line in lines:
+                        curr = len(line) - len(line.lstrip())
+                        if curr < ident:
+                          curr = ident
+                        else:
+                          ident = curr 
+                        traceback = traceback + ' ' * ident + line.lstrip() + '\n'
                     self.append(LI + ' %s time(s), code: %s::\n\n'
                                 '    %s\n' %(
                         len(errors[err_type]),
